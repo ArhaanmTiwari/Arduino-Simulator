@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArduSim — Arduino Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:,">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">Ardu<span>Sim</span></div>
+      <div class="topbar-divider"></div>
+      <button class="tb-btn" id="btn-run" onclick="runSimulation()">▶ Run</button>
+      <button class="tb-btn danger" id="btn-stop" onclick="stopSimulation()" disabled>■ Stop</button>
+      <button class="tb-btn" onclick="clearCanvas()">🗑 Clear</button>
+    </div>
+    <div class="topbar-center">
+      <div class="status-chip" id="status-chip">⬤ Ready</div>
+    </div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="toggleHelp()">? Help</button>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <!-- COMPONENTS -->
+    <div class="panel components-panel">
+      <div class="panel-title">Components</div>
+      <div class="component-list" id="component-list"></div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-wrap">
+      <div class="canvas-toolbar">
+        <span class="canvas-hint">🖱 Drag components • Click pins to wire • Scroll to pan</span>
+        <button class="tb-btn small" onclick="zoomIn()">+</button>
+        <button class="tb-btn small" onclick="zoomOut()">−</button>
+        <button class="tb-btn small" onclick="resetZoom()">Reset</button>
+      </div>
+      <div class="canvas-container" id="canvas-container">
+        <svg id="wire-layer" class="wire-layer"></svg>
+        <div class="canvas-board" id="canvas-board">
+
+          <!-- Arduino Uno PCB with SVG image -->
+          <div id="arduino-board" style="position:absolute; left:20px; top:30px; cursor:move;">
+            <img src="arduino.svg" width="340" height="220" style="display:block; border-radius:8px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);" draggable="false" />
+            <!-- Interactive pin overlays -->
+            <div id="digital-pins" style="position:absolute; top:10px; left:58px; display:flex; gap:0px;"></div>
+            <div id="analog-pins" style="position:absolute; bottom:10px; left:58px; display:flex; gap:0px;"></div>
+            <div id="power-pins" style="position:absolute; bottom:10px; left:238px; display:flex; gap:0px;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Serial Monitor -->
+      <div class="serial-monitor">
+        <div class="serial-header">
+          <span>📟 SERIAL MONITOR</span>
+          <div style="display:flex;gap:6px">
+            <span style="font-size:10px;color:#444;font-family:monospace">9600 BAUD</span>
+            <button class="tb-btn small" onclick="clearSerial()">Clear</button>
+          </div>
+        </div>
+        <div class="serial-output" id="serial-output"></div>
+      </div>
+    </div>
+
+    <!-- CODE EDITOR -->
+    <div class="panel editor-panel">
+      <div class="panel-title">Code Editor <span class="lang-badge">Arduino C++</span></div>
+      <div class="editor-wrap">
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea id="code-editor" spellcheck="false" autocorrect="off" autocapitalize="off"
+          oninput="updateLineNumbers()"
+          onkeydown="handleEditorKey(event)"></textarea>
+      </div>
+      <div class="editor-footer">
+        <button class="tb-btn full" onclick="runSimulation()">▶ Upload & Run</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HELP MODAL -->
+  <div class="modal-overlay" id="help-modal" style="display:none" onclick="toggleHelp()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2>🤖 How to use ArduSim</h2>
+      <div class="help-grid">
+        <div class="help-item"><div class="help-num">1</div><div><strong>Drag</strong> components from the left panel onto the canvas</div></div>
+        <div class="help-item"><div class="help-num">2</div><div><strong>Click</strong> a component pin, then click a board pin or breadboard hole to wire them</div></div>
+        <div class="help-item"><div class="help-num">3</div><div><strong>Write</strong> your Arduino code in the editor on the right</div></div>
+        <div class="help-item"><div class="help-num">4</div><div><strong>Click Run</strong> to simulate your circuit!</div></div>
+      </div>
+      <div class="supported-functions">
+        pinMode() • digitalWrite() • digitalRead() • analogWrite() • analogRead()
+        delay() • Serial.println() • Serial.print() • millis() • map() • constrain()
+        if/else • for • while • variables • custom functions
+      </div>
+      <button class="tb-btn full" onclick="toggleHelp()" style="margin-top:1rem">Got it! 🚀</button>
+    </div>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="canvas.js"></script>
+  <script src="editor.js"></script>
+  <script src="simulator.js"></script>
+</body>
+</html>
