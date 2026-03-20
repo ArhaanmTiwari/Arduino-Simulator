@@ -545,3 +545,22 @@ function serialLog(msg, type) {
 function clearSerial() { document.getElementById('serial-output').innerHTML = ''; }
 
 initBoard();
+
+// Register with proxy system
+window._canvas = {
+  clear: clearCanvas,
+  zoomIn: zoomIn,
+  zoomOut: zoomOut,
+  resetZoom: resetZoom,
+  onBBHole: onBBHoleClick,
+  deleteComp: deleteComponent
+};
+window.clearCanvas = clearCanvas;
+window.toggleHelp = toggleHelp;
+window.zoomIn = zoomIn;
+window.zoomOut = zoomOut;
+window.resetZoom = resetZoom;
+window.clearSerial = clearSerial;
+window.onBBHoleClick = onBBHoleClick;
+window.deleteComponent = deleteComponent;
+window.deleteWire = deleteWire;

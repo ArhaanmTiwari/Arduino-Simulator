@@ -128,7 +128,7 @@
       <h1>Simulate Arduino<br><span>In Your Browser</span></h1>
       <p>Drag and drop components, write Arduino C++ code, and see your circuit come to life — no hardware needed!</p>
       <div class="hero-btns">
-        <button class="btn-big primary" onclick="window.location.href='simulator.html'">Try Without Account</button>
+        <button class="btn-big primary" onclick="window.location.href='index.html'">Try Without Account</button>
         <button class="btn-big secondary" onclick="showAuth('signup')">Create Free Account</button>
       </div>
     </div>
@@ -208,7 +208,7 @@
   </div>
 
   <footer>
-    © 2026 ArduSim · Built by Arhaan Tech Innovations · <a href="simulator.html" style="color:var(--accent)">Open Simulator</a>
+    © 2026 ArduSim · Built by Arhaan Tech Innovations · <a href="index.html" style="color:var(--accent)">Open Simulator</a>
   </footer>
 
   <script type="module">
@@ -237,13 +237,8 @@
     onAuthStateChanged(auth, async (user) => {
       if (user && !isSigningUp) {
         currentUser = user;
-        // Save auth info for simulator page
-        localStorage.setItem('ardsim_uid', user.uid);
-        localStorage.setItem('ardsim_name', user.displayName || user.email);
         showDashboard(user);
       } else if (!user) {
-        localStorage.removeItem('ardsim_uid');
-        localStorage.removeItem('ardsim_name');
         showHero();
       }
     });
@@ -326,43 +321,11 @@
     }
 
     window.openProject = function(id) {
-      window.location.href = `simulator.html?project=${id}`;
+      window.location.href = `index.html?project=${id}`;
     };
 
-    window.openSimulator = async function() {
-      if (!currentUser) {
-        window.location.href = 'simulator.html';
-        return;
-      }
-      const name = prompt('Project name:', 'My Arduino Project');
-      if (!name) return;
-
-      // Create project in Firestore first
-      const projectId = `proj_${Date.now()}`;
-      try {
-        await setDoc(doc(db, 'projects', projectId), {
-          uid: currentUser.uid,
-          name: name,
-          code: `void setup() {
-  Serial.begin(9600);
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(13, HIGH);
-  delay(1000);
-  digitalWrite(13, LOW);
-  delay(1000);
-}`,
-          components: [],
-          wires: [],
-          updatedAt: serverTimestamp()
-        });
-        window.location.href = `simulator.html?project=${projectId}`;
-      } catch(err) {
-        console.error(err);
-        window.location.href = 'simulator.html';
-      }
+    window.openSimulator = function() {
+      window.location.href = 'index.html';
     };
 
     window.deleteProject = async function(id, e) {
@@ -373,7 +336,7 @@ void loop() {
     };
 
     window.newProject = function() {
-      openSimulator();
+      window.location.href = 'index.html';
     };
 
     window.handleLogout = async function() {

@@ -1,18 +1,33 @@
-// Default starter code
-const DEFAULT_CODE = `void setup() {
+const DEFAULT_CODE = `#include <Servo.h>
+
+Servo myServo;
+int btnPin = 2;
+int ledPin = 13;
+
+void setup() {
   Serial.begin(9600);
-  pinMode(13, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(btnPin, INPUT);
+  myServo.attach(9);
   Serial.println("Arduino ready!");
 }
 
 void loop() {
-  digitalWrite(13, HIGH);
-  Serial.println("LED ON");
-  delay(1000);
+  // Read button
+  int btn = digitalRead(btnPin);
   
-  digitalWrite(13, LOW);
-  Serial.println("LED OFF");
-  delay(1000);
+  if (btn == HIGH) {
+    digitalWrite(ledPin, HIGH);
+    myServo.write(90);
+    tone(8, 1000);
+    Serial.println("Button pressed!");
+  } else {
+    digitalWrite(ledPin, LOW);
+    myServo.write(0);
+    noTone(8);
+  }
+  
+  delay(100);
 }`;
 
 const editor = document.getElementById('code-editor');
@@ -34,14 +49,12 @@ function handleEditorKey(e) {
     editor.selectionStart = editor.selectionEnd = start + 2;
     updateLineNumbers();
   }
-
-  // Sync scroll between editor and line numbers
-  editor.addEventListener('scroll', () => {
-    document.getElementById('line-numbers').scrollTop = editor.scrollTop;
-  });
 }
 
-// Sync editor scroll with line numbers
 editor.addEventListener('scroll', () => {
   document.getElementById('line-numbers').scrollTop = editor.scrollTop;
 });
+
+// Expose globally
+window.updateLineNumbers = updateLineNumbers;
+window.handleEditorKey = handleEditorKey;
